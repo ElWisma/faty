@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para ti, Fátima</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d1b3e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Cormorant Garamond', serif;
+    position: relative;
+  }
+
+  /* ── Fondo estrellado ── */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to   { opacity: 0.9; transform: scale(1.4); }
+  }
+
+  /* ── Corazones de borde ── */
+  .hearts-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .heart {
+    position: absolute;
+    font-size: 0;
+    width: var(--s);
+    height: var(--s);
+    animation: heartbeat 1.2s ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+  .heart::before,
+  .heart::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 80%;
+    background: rgba(255, 130, 167, var(--op));
+    border-radius: 50% 50% 0 0;
+    box-shadow: 0 0 8px rgba(255, 130, 167, 0.4);
+  }
+  .heart::before { left: 50%; transform-origin: 0 100%; transform: rotate(-45deg); }
+  .heart::after  { right: 50%; transform-origin: 100% 100%; transform: rotate(45deg); }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14%       { transform: scale(1.25); }
+    28%       { transform: scale(1); }
+    42%       { transform: scale(1.15); }
+    70%       { transform: scale(1); }
+  }
+
+  /* ── Video wrapper ── */
+  #video-section {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards 0.5s;
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  .video-frame {
+    position: relative;
+    width: min(854px, 92vw);
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(100, 160, 255, 0.25), 0 0 120px rgba(100, 160, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Sección de texto ── */
+  #text-section {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: #0d1b3e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease;
+  }
+  #text-section.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .poem-container {
+    max-width: 680px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .poem-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: rgba(220, 235, 255, 0);
+    line-height: 1.9;
+    transition: color 1.2s ease, transform 1.2s ease;
+    transform: translateY(12px);
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+  .poem-line.active {
+    color: rgba(220, 235, 255, 0.95);
+    transform: translateY(0);
+  }
+  .poem-line.past {
+    color: rgba(220, 235, 255, 0.35);
+  }
+
+  /* ── Corazón final ── */
+  #final-heart {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, rgba(180, 30, 80, 0.95) 0%, rgba(13, 27, 62, 0.98) 70%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+  }
+  #final-heart.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .big-heart {
+    position: relative;
+    width: min(55vw, 320px);
+    height: min(55vw, 320px);
+    animation: bigBeat 1s ease-in-out infinite;
+  }
+  @keyframes bigBeat {
+    0%, 100% { transform: scale(1); }
+    15%       { transform: scale(1.12); }
+    30%       { transform: scale(1.0); }
+    45%       { transform: scale(1.07); }
+  }
+  .big-heart::before,
+  .big-heart::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 80%;
+    background: #e8275e;
+    border-radius: 50% 50% 0 0;
+    filter: drop-shadow(0 0 20px rgba(232, 39, 94, 0.6));
+  }
+  .big-heart::before { left: 50%; transform-origin: 0 100%; transform: rotate(-45deg); }
+  .big-heart::after  { right: 50%; transform-origin: 100% 100%; transform: rotate(45deg); }
+
+  #fatima-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 9vw, 5.5rem);
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.06em;
+    margin-top: 2.5rem;
+    text-shadow: 0 0 40px rgba(255,255,255,0.4), 0 0 80px rgba(255,130,167,0.3);
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 1.5s ease 0.8s, transform 1.5s ease 0.8s;
+  }
+  #final-heart.visible #fatima-name {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ── Partículas de corazones pequeños en el final ── */
+  .mini-hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .mini-heart {
+    position: absolute;
+    bottom: -60px;
+    font-size: 1.4rem;
+    opacity: 0;
+    animation: floatUp var(--fd) ease-in var(--fd2) infinite;
+  }
+  .mini-heart::before,
+  .mini-heart::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 16px;
+    background: rgba(255, 130, 167, 0.85);
+    border-radius: 50% 50% 0 0;
+  }
+  .mini-heart::before { left: 10px; transform-origin: 0 100%; transform: rotate(-45deg); }
+  .mini-heart::after  { left: 2px; transform-origin: 100% 100%; transform: rotate(45deg); }
+
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(0) translateX(0) scale(0.6); }
+    10%  { opacity: 0.8; }
+    90%  { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-110vh) translateX(var(--drift)) scale(1.1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Estrellas de fondo -->
+<div class="stars" id="stars"></div>
+
+<!-- Corazones en los bordes -->
+<div class="hearts-container" id="hearts"></div>
+
+<!-- VIDEO -->
+<section id="video-section">
+  <div class="video-frame">
+    <!-- 🎬 Reemplaza "tu-video.mp4" con el nombre real de tu archivo de video -->
+    <video id="mainVideo" autoplay playsinline>
+      <source src="Faty.mp4" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+  </div>
+</section>
+
+<!-- TEXTO DEDICATORIA -->
+<section id="text-section">
+  <div class="poem-container" id="poem">
+    <!-- 
+      ✏️ INSTRUCCIONES PARA EL TEXTO:
+      Cada <p class="poem-line"> es una línea que aparecerá sola.
+      Cambia el tiempo en data-time="X" (segundos desde que empieza el texto).
+      La primera línea siempre empieza en 0.
+    -->
+    <p class="poem-line" data-time="0">Hay cosas que las palabras casi no alcanzan...</p>
+    <p class="poem-line" data-time="4">pero quiero intentarlo de todas formas.</p>
+    <p class="poem-line" data-time="8">Desde que llegaste,</p>
+    <p class="poem-line" data-time="11">el mundo tiene otro color.</p>
+    <p class="poem-line" data-time="15">Hay más luz en los días ordinarios</p>
+    <p class="poem-line" data-time="19">y más calma en las noches difíciles.</p>
+    <p class="poem-line" data-time="23">Gracias por elegirme,</p>
+    <p class="poem-line" data-time="27">por quedarte,</p>
+    <p class="poem-line" data-time="30">por ser exactamente como eres.</p>
+    <p class="poem-line" data-time="35">Te amo hoy, mañana</p>
+    <p class="poem-line" data-time="39">y en todos los días que vengan.</p>
+  </div>
+</section>
+
+<!-- CORAZÓN FINAL CON NOMBRE -->
+<div id="final-heart">
+  <div class="mini-hearts" id="miniHearts"></div>
+  <div class="big-heart"></div>
+  <div id="fatima-name">Fátima</div>
+</div>
+
+<script>
+// ── Estrellas ──
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2.5 + 0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+  starsEl.appendChild(s);
+}
+
+// ── Corazones en los bordes ──
+const heartsEl = document.getElementById('hearts');
+const borderPositions = [];
+const count = 24;
+for (let i = 0; i < count; i++) {
+  const side = i % 4;
+  let top, left;
+  const edge = 2 + Math.random() * 8;
+  const along = 5 + Math.random() * 90;
+  if (side === 0) { top = edge; left = along; }
+  else if (side === 1) { top = 100 - edge; left = along; }
+  else if (side === 2) { left = edge; top = along; }
+  else { left = 100 - edge; top = along; }
+  borderPositions.push({ top, left });
+}
+borderPositions.forEach(pos => {
+  const h = document.createElement('div');
+  h.className = 'heart';
+  const size = 18 + Math.random() * 22;
+  h.style.cssText = `--s:${size}px;--op:${0.4+Math.random()*0.5};--delay:${Math.random()*2}s;top:${pos.top}%;left:${pos.left}%`;
+  heartsEl.appendChild(h);
+});
+
+// ── Lógica principal ──
+const video = document.getElementById('mainVideo');
+const textSection = document.getElementById('text-section');
+const finalHeart = document.getElementById('final-heart');
+const lines = document.querySelectorAll('.poem-line');
+const miniHeartsEl = document.getElementById('miniHearts');
+
+let textStarted = false;
+let textTimer = null;
+let currentLine = -1;
+
+// Secuencia del texto
+const lineTimes = Array.from(lines).map(l => parseInt(l.dataset.time));
+const totalTextDuration = lineTimes[lineTimes.length - 1] + 5;
+
+function startTextSequence() {
+  textSection.classList.add('visible');
+  const startTime = Date.now();
+
+  function tick() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    let newActive = -1;
+    for (let i = lineTimes.length - 1; i >= 0; i--) {
+      if (elapsed >= lineTimes[i]) { newActive = i; break; }
+    }
+
+    if (newActive !== currentLine) {
+      currentLine = newActive;
+      lines.forEach((l, idx) => {
+        l.classList.toggle('active', idx === currentLine);
+        l.classList.toggle('past', idx < currentLine);
+      });
+    }
+
+    if (elapsed >= totalTextDuration) {
+      showFinalHeart();
+      return;
+    }
+    textTimer = requestAnimationFrame(tick);
+  }
+  textTimer = requestAnimationFrame(tick);
+}
+
+function showFinalHeart() {
+  cancelAnimationFrame(textTimer);
+  finalHeart.classList.add('visible');
+  spawnMiniHearts();
+}
+
+function spawnMiniHearts() {
+  for (let i = 0; i < 18; i++) {
+    const mh = document.createElement('div');
+    mh.className = 'mini-heart';
+    const drift = (Math.random() - 0.5) * 120;
+    mh.style.cssText = `left:${10+Math.random()*80}%;--fd:${4+Math.random()*5}s;--fd2:${Math.random()*6}s;--drift:${drift}px`;
+    miniHeartsEl.appendChild(mh);
+  }
+}
+
+// Detectar fin del video
+video.addEventListener('ended', () => {
+  if (!textStarted) {
+    textStarted = true;
+    startTextSequence();
+  }
+});
+
+// Fallback: si el video no carga, mostrar el texto de todas formas
+video.addEventListener('error', () => {
+  if (!textStarted) {
+    textStarted = true;
+    setTimeout(startTextSequence, 2000);
+  }
+});
+</script>
+</body>
+</html>
