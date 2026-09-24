@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Te cielooo ☀️</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Trebuchet MS',system-ui,sans-serif;background:linear-gradient(#ffe27a,#ff9a76)}
+#en{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6vw;font-weight:800;font-size:min(11vw,90px);line-height:1.1;color:rgba(255,255,255,.3);animation:fade .9s}
+#es{position:fixed;left:0;right:0;top:10vh;text-align:center;padding:0 6vw;font-weight:800;font-size:min(9vw,62px);line-height:1.2;color:#fff;text-shadow:0 3px 0 #c9591a,0 8px 16px #0003}
+.w{display:inline-block;margin:0 .14em;opacity:0;animation:pop .6s cubic-bezier(.2,1.6,.4,1) forwards,wave 2.4s ease-in-out infinite}
+.name .l{display:inline-block;color:#fff36b;animation:jump 1s ease-in-out infinite;animation-delay:calc(var(--k)*.1s)}
+#sunwrap{position:fixed;left:50%;bottom:6vh;width:min(52vw,250px);aspect-ratio:1;margin-left:calc(min(52vw,250px)/-2)}
+#sun{width:100%;height:100%;overflow:visible;animation:float 3s ease-in-out infinite}
+#rays{animation:spin 24s linear infinite}
+.eyes,.mouth{transform-box:fill-box;transform-origin:center}
+.happy #sun{animation:hop .55s ease-in-out infinite}
+.happy #rays{animation-duration:4s}
+.happy .eyes{animation:beat .55s ease-in-out infinite}
+.happy .ck{opacity:.95}.ck{opacity:.5;transition:opacity .4s}
+#crown{position:absolute;inset:0;pointer-events:none}
+.f{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:#fff;color:#e53961;font:800 26px/46px 'Trebuchet MS',sans-serif;text-align:center;box-shadow:0 4px 0 #ffb300,0 8px 14px #0003;transform:translate(var(--x),var(--y));animation:bloom .7s cubic-bezier(.2,1.5,.4,1) backwards,bob 1s ease-in-out .8s infinite;animation-delay:calc(var(--i)*.22s),calc(var(--i)*.22s + .8s)}
+.bye .f{animation:bye .6s ease-in forwards}
+.hrt{position:fixed;bottom:16vh;color:#e53961;font-size:26px;pointer-events:none;animation:rise 2.4s ease-out forwards}
+#tm{position:fixed;top:8px;left:10px;font:14px monospace;color:#7a3b00;opacity:.7}
+#ui{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:#ffd76ae6}
+.card{background:#fffaf0;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center;color:#7a3b00;box-shadow:0 10px 40px #b8590066}
+h1{margin:0 0 8px;font-size:34px}
+button{margin-top:12px;background:#ff8a3d;color:#fff;border:0;border-radius:999px;padding:14px 34px;font:700 20px 'Trebuchet MS',sans-serif;cursor:pointer;box-shadow:0 4px 0 #c9591a}
+@keyframes fade{from{opacity:0;transform:scale(.94)}}
+@keyframes pop{from{opacity:0;transform:translateY(30px) scale(.2) rotate(-12deg)}to{opacity:1;transform:none}}
+@keyframes wave{50%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes jump{40%{transform:translateY(-.35em) scale(1.15)}}
+@keyframes float{50%{transform:translateY(-8px)}}
+@keyframes hop{50%{transform:translateY(-22px) scale(1.06,.96)}}
+@keyframes beat{50%{transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bloom{from{transform:translate(0,0) scale(0)}70%{transform:translate(var(--x),var(--y)) scale(1.35)}}
+@keyframes bob{50%{transform:translate(var(--x),calc(var(--y) - 7px))}}
+@keyframes bye{to{transform:translate(var(--x),calc(var(--y) - 90px)) scale(0);opacity:0}}
+@keyframes rise{from{opacity:1;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(var(--dx),-45vh) scale(1.3)}}
+</style></head><body>
+<div id="tm"></div>
+<div id="en"></div>
+<div id="es"></div>
+<div id="sunwrap">
+ <div id="crown"></div>
+ <svg id="sun" viewBox="-100 -100 200 200">
+  <defs><radialGradient id="g" cx="0" cy="-.3" r="1"><stop offset="0" stop-color="#fff176"/><stop offset="1" stop-color="#ffca28"/></radialGradient></defs>
+  <g id="rays"></g>
+  <circle r="58" fill="url(#g)"/>
+  <ellipse class="ck" cx="-36" cy="16" rx="10" ry="7" fill="#ff5a78"/>
+  <ellipse class="ck" cx="36" cy="16" rx="10" ry="7" fill="#ff5a78"/>
+  <g class="eyes"><text x="-20" y="4" font-size="32" text-anchor="middle" fill="#e53961">♥</text><text x="20" y="4" font-size="32" text-anchor="middle" fill="#e53961">♥</text></g>
+  <path class="mouth" d="M-16 16 Q0 36 16 16" fill="none" stroke="#7a3b00" stroke-width="5" stroke-linecap="round"/>
+ </svg>
+</div>
+<div id="ui">
+ <div class="card" id="start"><h1>Eres mi sol</h1><p id="for"></p><button id="go">Pícame mor</button></div>
+ <div class="card" id="end" style="display:none"><h1 id="endname"></h1><p id="ded" style="font-size:20px"></p><button id="again">¿Otra vez, mi amor?</button></div>
+</div>
+<script>
+
+const NAME = "Fatty";                 
+const DEDICATORIA = "Te Cielooo ☀️"; 
+const SHOW_TIMER = true;              
+const MAX_LINE_SECONDS = 7;           
+
+const SONG = "song.flac";
+
+const LYRICS = [
+  ["00:02.23", "Esto es para tí, mi amor", "Te la dedico con todo mi amor,"],
+  ["00:06.23", "You were too much,", "Eras demasiado,"],
+  ["00:09.13", "Then all at once you were just enough.", "Y de pronto fuiste justo lo que necesitaba."],
+  ["00:11.68", "You're just right, you're the perfect temp", "Eres justo como debes ser, la temperatura perfecta"],
+  ["00:14.27", "In my coffee cup when I've overslept.", "En mi taza de café cuando me he quedado dormido."],
+  ["00:17.05", "You are complete,", "Eres completa,"],
+  ["00:19.17", "The final chord in the even beat,", "El acorde final en el ritmo perfecto,"],
+  ["00:21.22", "You're the perfect rhyme", "Eres la rima perfecta"],
+  ["00:22.87", "In the perfect time.", "En el momento perfecto."],
+  ["00:23.69", "Please can I make you mine?", "Por favor, ¿puedo hacerte mía?"],
+
+  ["00:29.27", "Don't want to make do,", "No quiero conformarme,"],
+  ["00:31.16", "Just want to tell you", "Solo quiero decirte"],
+  ["00:33.74", "Ufff.", "Me gustas, {fatty} " ],
+  ["00:36.34", "Bells keep ringing.", "Las campanas no dejan de sonar."],
+  ["00:38.50", "Don't want to get by,", "No quiero simplemente seguir adelante,"],
+  ["00:41.48", "Can't keep it inside;", "No puedo seguir guardándomelo;"],
+  ["00:43.54", "Ya lo sabes.", "Me gustas,{fatty} ."],
+  ["00:45.99", "My heart keeps singing", "Mi corazón no deja de cantar"],
+  ["00:47.54", "La la la la la la la", "La la la la la la la"],
+  ["00:56.08", "La la la la la la la la", "La la la la la la la la"],
+  ["01:01.91", "Oo oo wah ah", "Oo oo wah ah"],
+
+  ["01:07.17", "You are the best,", "Eres lo mejor,"],
+  ["01:09.25", "The battery poundin' in my chest.", "El latido que golpea en mi pecho."],
+  ["01:11.06", "If we're playing space and we have to dock,", "Si estuviéramos jugando a viajar por el mundo y tuviéramos que acoplarnos,"],
+  ["01:13.22", "You will be my Kirk, I will be your Spock.", "Tú serías mi Lois, yo sería tu Clack."],
+  ["01:16.06", "You're the bee's knees,", "Eres lo máximo,"],
+  ["01:18.04", "A sunny day with a cool breeze.", "Un día soleado con una brisa fresca."],
+  ["01:20.23", "You're the night time drive in my favorite tee.", "Eres ese paseo nocturno en coche con mi camiseta favorita."],
+  ["01:22.64", "Please will you marry me?", "Por favor, ¿te casarías conmigo, mi {Fatty} ?"],
+
+  ["01:30.00", "Don't want to make do,", "No quiero conformarme,"],
+  ["01:31.30", "Just want to tell you", "Solo quiero decirte"],
+  ["01:33.81", "Demasiado.", "Me gustas,{fatty} ."],
+  ["01:36.22", "Bells keep ringing.", "Las campanas no dejan de sonar."],
+  ["01:38.14", "Don't want to get by,", "No quiero simplemente seguir adelante,"],
+  ["01:40.90", "Can't keep it inside;", "No puedo seguir guardándomelo;"],
+  ["01:43.29", "Me encantas.", "Me gustas,{fatty} ."],
+  ["01:45.08", "My heart keeps singing", "Mi corazón no deja de cantar"],
+  ["01:48.16", "La la la la la la la", "La la la la la la la"],
+  ["01:57.41", "La la la la la la la la", "La la la la la la la la"],
+  ["02:02.94", "Oo oo wah ah", "Oo oo wah ah"],
+
+  ["02:06.05", "I think you are perfect even though you don't agree,", "Creo que eres perfecta aunque tú no estés de acuerdo,"],
+  ["02:11.17", "And maybe 'cause you're lookin', you just see what you will see.", "Y quizá porque cuando te miras, solo ves lo que quieres ver."],
+  ["02:16.10", "But baby if you're lookin', grow old with me.", "Pero, cariño, si vas a mirar, envejece conmigo."],
+  ["02:22.39", "I wanna know what it is too tell you I like you all the time.", "Quiero saber cómo decirte todo el tiempo que me gustas."],
+  ["02:27.20", "Woah oh oh o-oh", "Woah oh oh o-oh"],
+  ["02:31.79", "I wanna know how it feels have our fingers intertwine.", "Quiero saber cómo se siente entrelazar nuestros dedos."],
+  ["02:37.76", "Woah oh oh o-oh", "Woah oh oh o-oh"],
+
+  ["02:41.15", "Don't want to make do,", "No quiero conformarme,"],
+  ["02:43.09", "Just want to tell you", "Solo quiero decirte"],
+  ["02:45.59", "¿No se nota?", "Me gustas,{fatty} ."],
+  ["02:47.64", "Bells keep ringing.", "Las campanas no dejan de sonar."],
+  ["02:50.00", "Don't want to get by,", "No quiero simplemente seguir adelante,"],
+  ["02:52.46", "Can't keep it inside;", "No puedo seguir guardándomelo;"],
+  ["02:54.79", "Te adoro.", "Me gustas,{fatty} ."],
+  ["02:57.58", "My heart keeps singing", "Mi corazón no deja de cantar"],
+  ["03:00.10", "La la la la la la la", "La la la la la la la"],
+  ["03:09.14", "La la la la la la la la", "La la la la la la la la"],
+  ["03:14.10", "Oo oo wah ah", "Oo oo wah ah"],
+  ["03:17.01", "Eres mi todo", "Te amo, mi {fatty} ."],
+  ["03:20.01", "", ""],
+
+];
+
+const SUN_START = [
+  "00:47.54",
+  "01:57.41",
+  "01:00.91",
+  "01:48.16",
+  "01:57.41",
+  "01:01.91",
+  "02:27.20",
+  "02:37.76",
+  "03:00.10",
+  "03:09.14",
+  "03:17.10",
+];
+const SUN_END = [
+  "01:04.91",
+  "02:06.05",
+];
+
+const $ = id => document.getElementById(id);
+const TOK = new RegExp('(\\{(?:nombre|name|' + NAME.replace(/[^\wáéíóúñü]/gi, '') + ')\\})', 'i');
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const T = x => typeof x === 'number' ? x : (m => m ? +m[1]*60 + +m[2] : 0)(String(x).match(/(\d+):(\d+(?:\.\d+)?)/));
+const L = LYRICS.map(r => ({t:T(r[0]), en:r[1]||'', es:r[2]||''})).sort((a,b) => a.t - b.t);
+const S = SUN_START.map(T), E = S.map((s,i) => SUN_END[i] != null ? T(SUN_END[i]) : s + 6);
+$('for').textContent = 'Te amo, mi ' + NAME;
+$('endname').textContent = 'Mon Cœur ' + NAME;
+$('ded').textContent = DEDICATORIA;
+$('rays').innerHTML = Array.from({length:12}, (_,i) => `<polygon points="-11,-66 0,-94 11,-66" fill="#ffb300" transform="rotate(${i*30})"/>`).join('');
+
+const aud = new Audio(); let useAud = !!SONG;
+if (SONG) { aud.src = SONG; aud.onerror = () => useAud = false; aud.onended = () => playing && finish(); }
+let playing = false, t0 = 0, li = -1, si = -1, hearts = 0;
+const clock = () => useAud ? aud.currentTime : (performance.now() - t0) / 1000;
+const endT = Math.max(L.length ? L[L.length-1].t : 0, ...E, 0) + 8;
+
+function showLine(l){
+  const en = $('en'); en.style.animation = 'none'; void en.offsetWidth; en.style.animation = '';
+  if (!l) { en.textContent = ''; $('es').innerHTML = ''; return; }
+  en.textContent = l.en;
+  let i = 0, h = '';
+  const dl = () => `style="animation-delay:${i*.14}s,${i*.14 + .6}s"`;
+  for (const p of l.es.split(TOK)) {
+    if (TOK.test(p)) { h += `<span class="w name" ${dl()}>` + [...NAME].map((c,k) => `<span class="l" style="--k:${k}">${esc(c)}</span>`).join('') + ' ♥</span>'; i++; }
+    else for (const w of p.split(/\s+/).filter(Boolean)) { h += `<span class="w" ${dl()}>${esc(w)}</span>`; i++; }
+  }
+  $('es').innerHTML = h;
+}
+function heart(n){
+  for (let k = 0; k < n; k++) {
+    const h = document.createElement('span'); h.className = 'hrt'; h.textContent = Math.random() < .5 ? '♥' : '💛';
+    const r = $('sunwrap').getBoundingClientRect();
+    h.style.left = (r.left + r.width*(.2 + Math.random()*.6)) + 'px'; h.style.setProperty('--dx', (Math.random()*160 - 80) + 'px');
+    document.body.appendChild(h); setTimeout(() => h.remove(), 2500);
+  }
+}
+function crown(){
+  const c = $('crown'), n = [...NAME].length, R = $('sunwrap').clientWidth * .74;
+  c.className = ''; c.innerHTML = '';
+  [...NAME].forEach((ch, i) => {
+    const a = (n === 1 ? 0 : -62 + i*124/(n-1)) * Math.PI/180, f = document.createElement('div');
+    f.className = 'f'; f.textContent = ch;
+    f.style.cssText = `--x:${R*Math.sin(a)}px;--y:${-R*Math.cos(a)}px;--i:${i}`;
+    c.appendChild(f);
+  });
+  setTimeout(() => si >= 0 && heart(10), n*220 + 500);
+}
+function happy(on){
+  document.body.classList.toggle('happy', on);
+  clearInterval(hearts);
+  if (on) { crown(); heart(6); hearts = setInterval(() => heart(1), 280); }
+  else { $('crown').classList.add('bye'); setTimeout(() => !document.body.classList.contains('happy') && ($('crown').innerHTML = ''), 700); }
+}
+function loop(){
+  requestAnimationFrame(loop);
+  if (!playing) return;
+  const n = clock();
+  if (SHOW_TIMER) { const m = Math.floor(n/60), s = n - m*60; $('tm').textContent = String(m).padStart(2,'0') + ':' + s.toFixed(2).padStart(5,'0'); }
+  let k = -1; for (let i = 0; i < L.length && L[i].t <= n; i++) k = i;
+  const want = k >= 0 && n - L[k].t <= MAX_LINE_SECONDS ? k : -1;
+  if (want !== li) { li = want; showLine(want >= 0 ? L[want] : null); }
+  let idx = -1; for (let i = 0; i < S.length; i++) if (n >= S[i] && n < E[i]) idx = i;
+  if (idx !== si) { si = idx; happy(idx >= 0); }
+  if (!useAud && n > endT) finish();
+}
+function begin(){
+  li = -1; si = -1; showLine(null); happy(false);
+  $('ui').style.display = 'none'; playing = true; t0 = performance.now();
+  if (useAud) { aud.currentTime = 0; aud.play().catch(() => { useAud = false; t0 = performance.now(); }); }
+  if (!L.length) $('es').textContent = 'Agrega tu letra en LYRICS ☀️';
+}
+function finish(){
+  playing = false; happy(false); aud.pause(); showLine(null);
+  $('start').style.display = 'none'; $('end').style.display = ''; $('ui').style.display = 'flex';
+}
+$('go').onclick = begin;
+$('again').onclick = begin;
+if (!SHOW_TIMER) $('tm').style.display = 'none';
+requestAnimationFrame(loop);
+</script>
+</body></html>
