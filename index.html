@@ -60,7 +60,7 @@ button{margin-top:12px;background:#ff8a3d;color:#fff;border:0;border-radius:999p
 <script>
 
 const NAME = "Fatty";                 
-const DEDICATORIA = "Te Cielooo ☀️"; 
+const DEDICATORIA = "Te Cieloo, iluminas todos mis dias.🌞"; 
 const SHOW_TIMER = true;              
 const MAX_LINE_SECONDS = 7;           
 
@@ -160,7 +160,7 @@ const T = x => typeof x === 'number' ? x : (m => m ? +m[1]*60 + +m[2] : 0)(Strin
 const L = LYRICS.map(r => ({t:T(r[0]), en:r[1]||'', es:r[2]||''})).sort((a,b) => a.t - b.t);
 const S = SUN_START.map(T), E = S.map((s,i) => SUN_END[i] != null ? T(SUN_END[i]) : s + 6);
 $('for').textContent = 'Te amo, mi ' + NAME;
-$('endname').textContent = 'Mon Cœur ' + NAME;
+$('endname').textContent = 'Mon Cœur, mon' + NAME;
 $('ded').textContent = DEDICATORIA;
 $('rays').innerHTML = Array.from({length:12}, (_,i) => `<polygon points="-11,-66 0,-94 11,-66" fill="#ffb300" transform="rotate(${i*30})"/>`).join('');
 
